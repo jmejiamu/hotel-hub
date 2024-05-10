@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import Constants from "expo-constants";
 import { Provider as ReduxProvider } from "react-redux";
 import store from "./src/redux/ReduxStore/store";
