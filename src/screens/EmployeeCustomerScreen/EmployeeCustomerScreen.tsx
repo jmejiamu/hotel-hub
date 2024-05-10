@@ -1,5 +1,6 @@
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { Image, ImageBackground, StyleSheet, Text, View } from "react-native";
+import { ImageBackground, StyleSheet, View } from "react-native";
 import { CustomButton } from "../../../.storybook/stories/CustomButton/CustomButton";
 import { colors } from "../../theme";
 import { spacing } from "../../theme/spacing";
@@ -12,22 +13,28 @@ export const EmployeeCustomerScreen = () => {
         source={require("../../../assets/hotel.jpg")}
         style={styles.imageContainer}
       >
-        <View style={styles.btnContainer}>
-          <CustomButton
-            text="Employee"
-            mainContainerStyles={styles.btnStyle}
-            size="medium"
-          />
-          <View style={styles.divider} />
-          <CustomButton
-            text="Customer"
-            mainContainerStyles={[
-              styles.btnStyle,
-              { backgroundColor: colors.color_200 },
-            ]}
-            size="medium"
-          />
-        </View>
+        <LinearGradient
+          // Background Linear Gradient
+          colors={["transparent", "rgba(0,0,0,0.9)"]}
+          style={styles.background}
+        >
+          <View style={styles.btnContainer}>
+            <CustomButton
+              text="Employee"
+              mainContainerStyles={styles.btnStyle}
+              size="medium"
+            />
+            <View style={styles.divider} />
+            <CustomButton
+              text="Customer"
+              mainContainerStyles={[
+                styles.btnStyle,
+                { backgroundColor: colors.color_200 },
+              ]}
+              size="medium"
+            />
+          </View>
+        </LinearGradient>
       </ImageBackground>
     </View>
   );
@@ -51,5 +58,11 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     flex: 1,
+  },
+  background: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
 });
