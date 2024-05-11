@@ -35,6 +35,7 @@ export const EmployeeCustomerScreen = () => {
                 styles.btnStyle,
                 { backgroundColor: colors.color_200 },
               ]}
+              onPress={() => navigate.navigate("SignInScreen")}
               size="medium"
             />
           </View>

@@ -6,9 +6,10 @@ import { useNavigation } from "@react-navigation/native";
 import { colors, fontSize, spacing } from "../../theme";
 import { HeaderNavigator } from "../../component";
 import { AntDesign } from "@expo/vector-icons";
+import { RootNavigationNames } from "../../types";
 
 export const CompanyCodeScreen = () => {
-  const navigate = useNavigation();
+  const navigate = useNavigation<RootNavigationNames>();
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -64,9 +65,11 @@ export const CompanyCodeScreen = () => {
               text="Healer"
               size="medium"
               mainContainerStyles={{ flex: 1 }}
+              onPress={() => navigate.navigate("SignInScreen")}
             />
             <View style={styles.divider} />
             <CustomButton
+              onPress={() => navigate.navigate("SignInScreen")}
               text="Frontend Desk"
               size="medium"
               mainContainerStyles={{
