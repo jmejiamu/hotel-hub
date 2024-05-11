@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { EmployeeCustomerScreen } from "../../screens";
+import { CompanyCodeScreen, EmployeeCustomerScreen } from "../../screens";
 import { RootStackParamList } from "../../types";
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -15,6 +15,13 @@ export const StackNav = () => {
         }}
         name="CustomerEmployeeScreen"
         component={EmployeeCustomerScreen}
+      />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+        name="CompanyCodeScreen"
+        component={CompanyCodeScreen}
       />
     </Stack.Navigator>
   );

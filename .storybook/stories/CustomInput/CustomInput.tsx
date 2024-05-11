@@ -15,7 +15,7 @@ export type CustomInputProps = {
   mainContainerStyles?: StyleProp<TextStyle>;
   placeholderTextColor?: ColorValue;
   onChangeText: (text: string) => void;
-  textValue: string;
+  textValue?: string;
 };
 
 export const CustomInput = (prop: CustomInputProps) => {

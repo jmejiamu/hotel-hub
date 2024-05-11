@@ -1,11 +1,14 @@
+import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { ImageBackground, StyleSheet, View } from "react-native";
 import { CustomButton } from "../../../.storybook/stories/CustomButton/CustomButton";
 import { colors } from "../../theme";
 import { spacing } from "../../theme/spacing";
+import { RootNavigationNames } from "../../types";
 
 export const EmployeeCustomerScreen = () => {
+  const navigate = useNavigation<RootNavigationNames>();
   return (
     <View style={styles.mainContainer}>
       <ImageBackground
@@ -23,6 +26,7 @@ export const EmployeeCustomerScreen = () => {
               text="Employee"
               mainContainerStyles={styles.btnStyle}
               size="medium"
+              onPress={() => navigate.navigate("CompanyCodeScreen")}
             />
             <View style={styles.divider} />
             <CustomButton
