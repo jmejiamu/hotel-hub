@@ -4,6 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import {
   CompanyCodeScreen,
   EmployeeCustomerScreen,
+  RegisterScreen,
   SignInScreen,
 } from "../../screens";
 import { RootStackParamList } from "../../types";
@@ -33,6 +34,13 @@ export const StackNav = () => {
         }}
         name="SignInScreen"
         component={SignInScreen}
+      />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+        name="RegisterScreen"
+        component={RegisterScreen}
       />
     </Stack.Navigator>
   );
