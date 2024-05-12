@@ -65,7 +65,9 @@ export const SignInScreen = () => {
             ]}
           >
             Don’t have an account?
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigate.navigate("RegisterScreen")}
+            >
               <Text
                 style={[
                   styles.subTitleStyle,
@@ -80,11 +82,7 @@ export const SignInScreen = () => {
               </Text>
             </TouchableOpacity>
           </Text>
-          <CustomButton
-            text="Log in"
-            size="medium"
-            onPress={() => navigate.navigate("SignInScreen")}
-          />
+          <CustomButton text="Log in" size="medium" onPress={() => {}} />
         </Animated.View>
       </SafeAreaView>
     </View>
