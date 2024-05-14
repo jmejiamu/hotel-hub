@@ -1,12 +1,13 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
+import React from "react";
+import { StyleSheet } from "react-native";
 import {
   CompanyCodeScreen,
   EmployeeCustomerScreen,
   RegisterScreen,
   SignInScreen,
 } from "../../screens";
+import { CalendarScreen } from "../../screens/CalendarScreen";
 import { RootStackParamList } from "../../types";
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -41,6 +42,13 @@ export const StackNav = () => {
         }}
         name="RegisterScreen"
         component={RegisterScreen}
+      />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+        name="CalendarScreen"
+        component={CalendarScreen}
       />
     </Stack.Navigator>
   );

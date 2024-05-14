@@ -1,20 +1,14 @@
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import {
-  Animated,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Animated, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { HeaderNavigator } from "../../component";
-import { colors, fontSize, spacing } from "../../theme";
 import { CustomButton } from "../../../.storybook/stories/CustomButton/CustomButton";
 import { CustomInput } from "../../../.storybook/stories/CustomInput/CustomInput";
-import { RootNavigationNames } from "../../types";
+import { HeaderNavigator } from "../../component";
 import { useFadeAnimation } from "../../hooks";
+import { colors, fontSize, spacing } from "../../theme";
+import { RootNavigationNames } from "../../types";
 
 export const RegisterScreen = () => {
   const navigate = useNavigation<RootNavigationNames>();
@@ -94,7 +88,11 @@ export const RegisterScreen = () => {
             </Text>
           </TouchableOpacity>
         </Text>
-        <CustomButton text="Register" size="medium" onPress={() => {}} />
+        <CustomButton
+          text="Register"
+          size="medium"
+          onPress={() => navigate.navigate("CalendarScreen")}
+        />
       </Animated.View>
     </SafeAreaView>
   );
