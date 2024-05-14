@@ -1,14 +1,15 @@
 import React, { ReactNode } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
 
 interface HeaderNavigatorProps {
   title?: string | ReactNode;
   rightElement?: ReactNode;
   leftElement?: JSX.Element;
+  containerStyle?: StyleProp<ViewStyle>;
 }
 
 export const HeaderNavigator = (props: HeaderNavigatorProps) => {
-  const { title, rightElement, leftElement } = props;
+  const { title, rightElement, leftElement, containerStyle } = props;
 
   const leftElem = !!leftElement && leftElement;
 
@@ -22,7 +23,7 @@ export const HeaderNavigator = (props: HeaderNavigatorProps) => {
   const rightElem = !!rightElement && leftElement;
 
   return (
-    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+    <View style={[styles.container, containerStyle]}>
       <View>{leftElem}</View>
       <View>{text}</View>
       <View>{rightElem}</View>
@@ -30,4 +31,9 @@ export const HeaderNavigator = (props: HeaderNavigatorProps) => {
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+});
