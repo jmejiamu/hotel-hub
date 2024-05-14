@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { CustomButton } from "../../../.storybook/stories/CustomButton/CustomButton";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Animated,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { colors, spacing } from "../../theme";
 import {
@@ -12,11 +19,13 @@ import {
 import { HeaderNavigator } from "../../component";
 import { useNavigation } from "@react-navigation/native";
 import { RootNavigationNames } from "../../types";
+import { useFadeAnimation } from "../../hooks";
 
 export const CalendarScreen = () => {
   const [events, setEvents] = useState<EventItem[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<PackedEvent>();
   const navigate = useNavigation<RootNavigationNames>();
+  const { fadeAnim } = useFadeAnimation(1000);
 
   const _onDragCreateEnd = (event: RangeTime) => {
     const randomId = Math.random().toString(36).slice(2, 10);
@@ -64,8 +73,21 @@ export const CalendarScreen = () => {
     );
   };
   return (
-    <View style={{ flex: 1 }}>
-      <View style={styles.headerContainer}>
+    <Animated.View
+      style={{
+        flex: 1,
+        opacity: fadeAnim,
+        transform: [
+          {
+            translateY: fadeAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [50, 0],
+            }),
+          },
+        ],
+      }}
+    >
+      <View style={[styles.headerContainer]}>
         <HeaderNavigator
           leftElement={
             <AntDesign
@@ -120,7 +142,7 @@ export const CalendarScreen = () => {
         }
       />
       {!!selectedEvent && _renderEditFooter()}
-    </View>
+    </Animated.View>
   );
 };
 
