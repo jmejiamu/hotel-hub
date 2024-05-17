@@ -3,6 +3,7 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import {
   CompanyCodeScreen,
+  CustomerListScreen,
   EmployeeCustomerScreen,
   RegisterScreen,
   SignInScreen,
@@ -49,6 +50,13 @@ export const StackNav = () => {
         }}
         name="CalendarScreen"
         component={CalendarScreen}
+      />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+        name="CustomerListScreen"
+        component={CustomerListScreen}
       />
     </Stack.Navigator>
   );

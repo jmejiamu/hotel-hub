@@ -85,7 +85,7 @@ export const SignInScreen = () => {
           <CustomButton
             text="Log in"
             size="medium"
-            onPress={() => navigate.navigate("CalendarScreen")}
+            onPress={() => navigate.navigate("CustomerListScreen")}
           />
         </Animated.View>
       </SafeAreaView>
