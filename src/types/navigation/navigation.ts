@@ -7,6 +7,7 @@ export type RootStackParamList = {
   RegisterScreen: undefined;
   CalendarScreen: undefined;
   CustomerListScreen: undefined;
+  PredefineCalendar: undefined;
 };
 
 export type RootNavigationNames = NativeStackNavigationProp<RootStackParamList>;
