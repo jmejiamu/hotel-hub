@@ -5,6 +5,7 @@ import {
   CompanyCodeScreen,
   CustomerListScreen,
   EmployeeCustomerScreen,
+  PredefineCalendar,
   RegisterScreen,
   SignInScreen,
 } from "../../screens";
@@ -57,6 +58,13 @@ export const StackNav = () => {
         }}
         name="CustomerListScreen"
         component={CustomerListScreen}
+      />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+        name="PredefineCalendar"
+        component={PredefineCalendar}
       />
     </Stack.Navigator>
   );

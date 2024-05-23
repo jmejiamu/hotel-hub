@@ -35,7 +35,8 @@ export const EmployeeCustomerScreen = () => {
                 styles.btnStyle,
                 { backgroundColor: colors.color_200 },
               ]}
-              onPress={() => navigate.navigate("SignInScreen")}
+              onPress={() => navigate.navigate("PredefineCalendar")}
+              // onPress={() => navigate.navigate("SignInScreen")}
               size="medium"
             />
           </View>
