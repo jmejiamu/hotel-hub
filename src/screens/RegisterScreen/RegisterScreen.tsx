@@ -1,18 +1,55 @@
-import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { Animated, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { CustomButton } from "../../../.storybook/stories/CustomButton/CustomButton";
 import { CustomInput } from "../../../.storybook/stories/CustomInput/CustomInput";
-import { HeaderNavigator } from "../../component";
-import { useFadeAnimation } from "../../hooks";
+import { RootNavigationNames, RootStackParamList } from "../../types";
+import { AppDispatch, RootState } from "../../redux/ReduxStore/store";
+import { RouteProp, useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { registerUser } from "../../redux/auth/authSlice";
 import { colors, fontSize, spacing } from "../../theme";
-import { RootNavigationNames } from "../../types";
+import { HeaderNavigator } from "../../component";
+import { AntDesign } from "@expo/vector-icons";
+import { useFadeAnimation } from "../../hooks";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const RegisterScreen = () => {
+type RegisterScreenRouteProp = RouteProp<RootStackParamList, "RegisterScreen">;
+
+interface RegisterScreenProps {
+  route: RegisterScreenRouteProp;
+}
+
+export const RegisterScreen = ({ route }: RegisterScreenProps) => {
+  const company_code = route.params!.company_code;
+  const userType = route.params!.userType;
   const navigate = useNavigation<RootNavigationNames>();
   const { fadeAnim } = useFadeAnimation(1000);
+
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { response, error, loading } = useSelector(
+    (state: RootState) => state.register
+  );
+
+  const onHandleSubmit = () => {
+    dispatch(
+      registerUser({ email, username, password, company_code, userType })
+    );
+  };
+
+  const storeData = async () => {
+    try {
+      await AsyncStorage.setItem("token", response.token);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.mainContainer}>
@@ -47,7 +84,8 @@ export const RegisterScreen = () => {
         <CustomInput
           size="medium"
           placeholder="Email"
-          onChangeText={() => {}}
+          onChangeText={setEmail}
+          textValue={email}
           mainContainerStyles={{
             marginVertical: spacing.size_large,
           }}
@@ -55,17 +93,20 @@ export const RegisterScreen = () => {
         />
         <CustomInput
           size="medium"
-          placeholder="Username"
-          onChangeText={() => {}}
+          placeholder="Name"
+          onChangeText={setUsername}
+          textValue={username}
           mainContainerStyles={{
             marginBottom: spacing.size_large,
           }}
           placeholderTextColor={colors.color_400}
         />
         <CustomInput
+          secureTextEntry={true}
           size="medium"
           placeholder="Password"
-          onChangeText={() => {}}
+          onChangeText={setPassword}
+          textValue={password}
           placeholderTextColor={colors.color_400}
         />
 
@@ -91,7 +132,11 @@ export const RegisterScreen = () => {
         <CustomButton
           text="Register"
           size="medium"
-          onPress={() => navigate.navigate("CalendarScreen")}
+          // onPress={() => navigate.navigate("CalendarScreen")}
+          onPress={() => {
+            onHandleSubmit();
+            storeData();
+          }}
         />
       </Animated.View>
     </SafeAreaView>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CustomButton } from "../../../.storybook/stories/CustomButton/CustomButton";
 import { CustomInput } from "../../../.storybook/stories/CustomInput/CustomInput";
 import { Animated, SafeAreaView, StyleSheet, Text, View } from "react-native";
@@ -11,6 +11,7 @@ import { RootNavigationNames } from "../../types";
 export const CompanyCodeScreen = () => {
   const navigate = useNavigation<RootNavigationNames>();
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [companyCode, setCompanyCode] = useState("");
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -54,7 +55,8 @@ export const CompanyCodeScreen = () => {
           <CustomInput
             size="medium"
             placeholder="Company code"
-            onChangeText={() => {}}
+            onChangeText={setCompanyCode}
+            textValue={companyCode}
             mainContainerStyles={{
               marginVertical: spacing.size_large,
             }}
@@ -65,11 +67,21 @@ export const CompanyCodeScreen = () => {
               text="Healer"
               size="medium"
               mainContainerStyles={{ flex: 1 }}
-              onPress={() => navigate.navigate("SignInScreen")}
+              onPress={() =>
+                navigate.navigate("SignInScreen", {
+                  company_code: companyCode,
+                  userType: "HEALER",
+                })
+              }
             />
             <View style={styles.divider} />
             <CustomButton
-              onPress={() => navigate.navigate("SignInScreen")}
+              onPress={() =>
+                navigate.navigate("SignInScreen", {
+                  company_code: companyCode,
+                  userType: "FRONTEND_DESK",
+                })
+              }
               text="Frontend Desk"
               size="medium"
               mainContainerStyles={{
