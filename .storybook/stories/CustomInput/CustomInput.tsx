@@ -4,19 +4,20 @@ import {
   StyleSheet,
   TextInput,
   TextStyle,
+  TextInputProps,
 } from "react-native";
 import React from "react";
 import { spacing } from "../../../src/theme/spacing";
 import { colors } from "../../../src/theme/colors";
 export type InputSize = "small" | "medium" | "large";
-export type CustomInputProps = {
+export interface CustomInputProps extends TextInputProps {
   size: InputSize;
   placeholder: string;
   mainContainerStyles?: StyleProp<TextStyle>;
   placeholderTextColor?: ColorValue;
   onChangeText: (text: string) => void;
   textValue?: string;
-};
+}
 
 export const CustomInput = (prop: CustomInputProps) => {
   const {
@@ -25,6 +26,7 @@ export const CustomInput = (prop: CustomInputProps) => {
     placeholderTextColor = "#FFF",
     onChangeText,
     textValue,
+    ...props
   } = prop;
 
   let sizeInput = {
@@ -35,6 +37,7 @@ export const CustomInput = (prop: CustomInputProps) => {
 
   return (
     <TextInput
+      {...prop}
       placeholder={placeholder}
       placeholderTextColor={placeholderTextColor}
       onChangeText={onChangeText}

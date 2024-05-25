@@ -2,15 +2,23 @@ import React from "react";
 import { Animated, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { CustomButton } from "../../../.storybook/stories/CustomButton/CustomButton";
 import { CustomInput } from "../../../.storybook/stories/CustomInput/CustomInput";
+import { RootStackParamList } from "../../types/navigation/navigation";
+import { RouteProp, useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { useNavigation } from "@react-navigation/native";
 import { colors, fontSize, spacing } from "../../theme";
 import { RootNavigationNames } from "../../types";
 import { HeaderNavigator } from "../../component";
 import { useFadeAnimation } from "../../hooks";
 import { AntDesign } from "@expo/vector-icons";
 
-export const SignInScreen = () => {
+type SignInScreenRouteProp = RouteProp<RootStackParamList, "SignInScreen">;
+interface SignInScreenProps {
+  route: SignInScreenRouteProp;
+}
+
+export const SignInScreen = ({ route }: SignInScreenProps) => {
+  const company_code = route.params?.company_code;
+  const userType = route.params?.userType;
   const navigate = useNavigation<RootNavigationNames>();
   const { fadeAnim } = useFadeAnimation(1000);
   return (
@@ -66,7 +74,12 @@ export const SignInScreen = () => {
           >
             Don’t have an account?
             <TouchableOpacity
-              onPress={() => navigate.navigate("RegisterScreen")}
+              onPress={() =>
+                navigate.navigate("RegisterScreen", {
+                  company_code: company_code,
+                  userType: userType,
+                })
+              }
             >
               <Text
                 style={[
