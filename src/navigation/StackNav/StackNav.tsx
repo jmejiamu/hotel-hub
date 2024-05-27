@@ -15,6 +15,7 @@ import { RootStackParamList, UserType } from "../../types";
 import { useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { colors, fontSize, spacing } from "../../theme";
+import { Loading } from "../../component";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -57,6 +58,7 @@ export const StackNav = () => {
   useEffect(() => {
     isAuth();
   }, []);
+
   useEffect(() => {
     if (response.token) {
       AsyncStorage.setItem("token", response.token);
@@ -65,32 +67,16 @@ export const StackNav = () => {
       setUserType(response.userType);
     }
   }, [response.token]);
+
   const Registration = (props) => (
     <RegisterScreen {...props} setLogged={setAuth} />
   );
+  const PredefineCalendarScreen = (props) => (
+    <PredefineCalendar {...props} setLogged={setAuth} />
+  );
 
   if (loading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: colors.color_100,
-        }}
-      >
-        <ActivityIndicator size="large" color={colors.color_300} />
-        <Text
-          style={{
-            marginTop: spacing.size_large,
-            fontSize: fontSize.size_large,
-            color: colors.color_300,
-          }}
-        >
-          Loading...
-        </Text>
-      </View>
-    );
+    return <Loading />;
   }
   return (
     <Stack.Navigator initialRouteName="CustomerEmployeeScreen">
@@ -99,7 +85,7 @@ export const StackNav = () => {
           {userType === UserType.CUSTOMER && (
             <Stack.Screen
               name="PredefineCalendar"
-              component={PredefineCalendar}
+              component={PredefineCalendarScreen}
               options={{ headerShown: false }}
             />
           )}
