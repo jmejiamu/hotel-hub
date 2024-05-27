@@ -7,6 +7,7 @@ import { colors, spacing } from "../../theme";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { RootNavigationNames } from "../../types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const eventConfigs: EventConfig[] = [
   {
@@ -344,6 +345,16 @@ const eventConfigs: EventConfig[] = [
 export const PredefineCalendar = () => {
   const predefinedEvents = generateYearlyEvents(eventConfigs);
   const navigate = useNavigation<RootNavigationNames>();
+  const onHandleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem("token");
+      await AsyncStorage.removeItem("user-type");
+      navigate.navigate("CustomerEmployeeScreen");
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  //TODO: fix the header
   return (
     <View style={styles.container}>
       <View style={[styles.headerContainer]}>
@@ -352,6 +363,14 @@ export const PredefineCalendar = () => {
             <AntDesign
               onPress={() => navigate.goBack()}
               name="arrowleft"
+              size={24}
+              color={colors.color_400}
+            />
+          }
+          rightElement={
+            <AntDesign
+              onPress={onHandleLogout}
+              name="logout"
               size={24}
               color={colors.color_400}
             />

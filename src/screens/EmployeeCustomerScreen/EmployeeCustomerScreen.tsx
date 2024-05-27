@@ -5,7 +5,7 @@ import { ImageBackground, StyleSheet, View } from "react-native";
 import { CustomButton } from "../../../.storybook/stories/CustomButton/CustomButton";
 import { colors } from "../../theme";
 import { spacing } from "../../theme/spacing";
-import { RootNavigationNames } from "../../types";
+import { RootNavigationNames, UserType } from "../../types";
 
 export const EmployeeCustomerScreen = () => {
   const navigate = useNavigation<RootNavigationNames>();
@@ -35,7 +35,12 @@ export const EmployeeCustomerScreen = () => {
                 styles.btnStyle,
                 { backgroundColor: colors.color_200 },
               ]}
-              onPress={() => navigate.navigate("SignInScreen")}
+              onPress={() =>
+                navigate.navigate("SignInScreen", {
+                  company_code: "",
+                  userType: UserType.CUSTOMER,
+                })
+              }
               size="medium"
             />
           </View>

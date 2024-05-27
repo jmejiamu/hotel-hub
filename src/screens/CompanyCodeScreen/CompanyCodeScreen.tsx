@@ -6,7 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 import { colors, fontSize, spacing } from "../../theme";
 import { HeaderNavigator } from "../../component";
 import { AntDesign } from "@expo/vector-icons";
-import { RootNavigationNames } from "../../types";
+import { RootNavigationNames, UserType } from "../../types";
 
 export const CompanyCodeScreen = () => {
   const navigate = useNavigation<RootNavigationNames>();
@@ -70,7 +70,7 @@ export const CompanyCodeScreen = () => {
               onPress={() =>
                 navigate.navigate("SignInScreen", {
                   company_code: companyCode,
-                  userType: "HEALER",
+                  userType: UserType.HEALER,
                 })
               }
             />
@@ -79,7 +79,7 @@ export const CompanyCodeScreen = () => {
               onPress={() =>
                 navigate.navigate("SignInScreen", {
                   company_code: companyCode,
-                  userType: "FRONTEND_DESK",
+                  userType: UserType.FRONTEND_DESK,
                 })
               }
               text="Frontend Desk"

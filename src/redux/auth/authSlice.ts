@@ -1,9 +1,14 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { UserType } from "../../types/usersType/usersType";
 
 interface Response {
   message: string;
   status: number;
   token: string;
+  username: string;
+  userType: string;
+  user_id: string;
 }
 interface AuthState {
   response: Response;
@@ -16,6 +21,9 @@ const initialState: AuthState = {
     message: "",
     status: 0,
     token: "",
+    username: "",
+    userType: "",
+    user_id: "",
   },
   loading: false,
   error: false,
@@ -32,19 +40,15 @@ export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (userData: UserData, thunkAPI) => {
     try {
-      const response = await fetch(
-        "http://192.168.1.115:3000/api-v1/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(userData),
-        }
-      );
+      const response = await fetch("http://localhost:3000/api-v1/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
 
       const res = await response.json();
-
       return res;
     } catch (error) {
       return thunkAPI.rejectWithValue(error);

@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Animated, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { CustomButton } from "../../../.storybook/stories/CustomButton/CustomButton";
 import { CustomInput } from "../../../.storybook/stories/CustomInput/CustomInput";
-import { RootNavigationNames, RootStackParamList } from "../../types";
+import { RootNavigationNames, RootStackParamList, UserType } from "../../types";
 import { AppDispatch, RootState } from "../../redux/ReduxStore/store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { registerUser } from "../../redux/auth/authSlice";
@@ -13,17 +14,17 @@ import { AntDesign } from "@expo/vector-icons";
 import { useFadeAnimation } from "../../hooks";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type RegisterScreenRouteProp = RouteProp<RootStackParamList, "RegisterScreen">;
 
 interface RegisterScreenProps {
   route: RegisterScreenRouteProp;
 }
+//TODO: add props to this
+export const RegisterScreen = (props) => {
+  const company_code = props.route.params!.company_code;
+  const userType = props.route.params!.userType;
 
-export const RegisterScreen = ({ route }: RegisterScreenProps) => {
-  const company_code = route.params!.company_code;
-  const userType = route.params!.userType;
   const navigate = useNavigation<RootNavigationNames>();
   const { fadeAnim } = useFadeAnimation(1000);
 
@@ -38,18 +39,26 @@ export const RegisterScreen = ({ route }: RegisterScreenProps) => {
   );
 
   const onHandleSubmit = () => {
-    dispatch(
-      registerUser({ email, username, password, company_code, userType })
-    );
-  };
-
-  const storeData = async () => {
     try {
-      await AsyncStorage.setItem("token", response.token);
+      dispatch(
+        registerUser({ email, username, password, company_code, userType })
+      );
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (response.token) {
+      AsyncStorage.setItem("token", response.token);
+      AsyncStorage.setItem("user-type", response.userType).then(() => {
+        if (response.userType === UserType.CUSTOMER) {
+          navigate.navigate("PredefineCalendar");
+          props.setLogged(true);
+        }
+      });
+    }
+  }, [response.token]);
 
   return (
     <SafeAreaView style={styles.mainContainer}>
@@ -132,10 +141,8 @@ export const RegisterScreen = ({ route }: RegisterScreenProps) => {
         <CustomButton
           text="Register"
           size="medium"
-          // onPress={() => navigate.navigate("CalendarScreen")}
           onPress={() => {
             onHandleSubmit();
-            storeData();
           }}
         />
       </Animated.View>

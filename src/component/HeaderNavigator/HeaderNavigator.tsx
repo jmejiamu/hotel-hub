@@ -20,7 +20,7 @@ export const HeaderNavigator = (props: HeaderNavigatorProps) => {
       title
     );
 
-  const rightElem = !!rightElement && leftElement;
+  const rightElem = !!rightElement && rightElement;
 
   return (
     <View style={[styles.container, containerStyle]}>
