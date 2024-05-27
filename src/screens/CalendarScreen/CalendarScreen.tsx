@@ -22,6 +22,7 @@ import {
   Text,
   View,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const CalendarScreen = () => {
   const [events, setEvents] = useState<EventItem[]>([]);
@@ -83,6 +84,16 @@ export const CalendarScreen = () => {
     );
   };
 
+  const onHandleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem("token");
+      await AsyncStorage.removeItem("user-type");
+      navigate.navigate("CustomerEmployeeScreen");
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <Animated.View
       style={{
@@ -108,6 +119,21 @@ export const CalendarScreen = () => {
               color={colors.color_400}
             />
           }
+          rightElement={
+            // <AntDesign
+            //   onPress={() => navigate.navigate("SettingsScreen")}
+            //   name="setting"
+            //   size={24}
+            //   color={colors.color_400}
+            // />
+            <AntDesign
+              onPress={onHandleLogout}
+              name="logout"
+              size={24}
+              color={colors.color_400}
+            />
+          }
+          containerStyle={{ justifyContent: "space-between" }}
         />
       </View>
       <Image

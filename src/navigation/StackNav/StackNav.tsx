@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import {
   CompanyCodeScreen,
   CustomerListScreen,
@@ -11,9 +11,10 @@ import {
 } from "../../screens";
 import { CalendarScreen } from "../../screens/CalendarScreen";
 import { RootState } from "../../redux/ReduxStore/store";
-import { RootStackParamList } from "../../types";
+import { RootStackParamList, UserType } from "../../types";
 import { useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { colors, fontSize, spacing } from "../../theme";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -22,45 +23,100 @@ export const StackNav = () => {
     (state: RootState) => state.register
   );
   const [userToken, setUserToken] = useState<string | null>("");
-  const getData = async () => {
+  const [userType, setUserType] = useState<string | null>("");
+
+  const [isLoggedIn, setIsLoggedIn] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(false);
+  const setAuth = (isAuth: boolean) => {
+    setIsAuthenticated(isAuth);
+  };
+
+  const isAuth = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
-      console.log("🚀 ~ getData ~ token:", token);
+      const userType = await AsyncStorage.getItem("user-type");
       setUserToken(token);
-    } catch (e) {
-      console.log(e);
+      setUserType(userType);
+      const response = await fetch("http://localhost:3000/api-v1/verify", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application",
+          authorization: `Bearer ${token}`,
+        },
+      });
+      const res = await response.json();
+
+      res.isVerify === true
+        ? setIsAuthenticated(true)
+        : setIsAuthenticated(false);
+    } catch (error) {
+      console.log(error);
     }
   };
 
   useEffect(() => {
-    getData();
-  }, [userToken, response.token]);
+    isAuth();
+  }, []);
+  useEffect(() => {
+    if (response.token) {
+      AsyncStorage.setItem("token", response.token);
+      AsyncStorage.setItem("user-type", response.userType);
+      setIsAuthenticated(true);
+      setUserType(response.userType);
+    }
+  }, [response.token]);
+  const Registration = (props) => (
+    <RegisterScreen {...props} setLogged={setAuth} />
+  );
 
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: colors.color_100,
+        }}
+      >
+        <ActivityIndicator size="large" color={colors.color_300} />
+        <Text
+          style={{
+            marginTop: spacing.size_large,
+            fontSize: fontSize.size_large,
+            color: colors.color_300,
+          }}
+        >
+          Loading...
+        </Text>
+      </View>
+    );
+  }
   return (
     <Stack.Navigator initialRouteName="CustomerEmployeeScreen">
-      {userToken !== null && userToken.length > 0 ? (
+      {isAuthenticated ? (
         <>
-          <Stack.Screen
-            options={{
-              headerShown: false,
-            }}
-            name="CalendarScreen"
-            component={CalendarScreen}
-          />
-          <Stack.Screen
-            options={{
-              headerShown: false,
-            }}
-            name="CustomerListScreen"
-            component={CustomerListScreen}
-          />
-          <Stack.Screen
-            options={{
-              headerShown: false,
-            }}
-            name="PredefineCalendar"
-            component={PredefineCalendar}
-          />
+          {userType === UserType.CUSTOMER && (
+            <Stack.Screen
+              name="PredefineCalendar"
+              component={PredefineCalendar}
+              options={{ headerShown: false }}
+            />
+          )}
+          {userType === UserType.FRONTEND_DESK && (
+            <>
+              <Stack.Screen
+                name="CalendarScreen"
+                component={CalendarScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="CustomerListScreen"
+                component={CustomerListScreen}
+                options={{ headerShown: false }}
+              />
+            </>
+          )}
         </>
       ) : (
         <>
@@ -76,7 +132,7 @@ export const StackNav = () => {
               headerShown: false,
             }}
             name="RegisterScreen"
-            component={RegisterScreen}
+            component={Registration}
           />
           <Stack.Screen
             options={{
