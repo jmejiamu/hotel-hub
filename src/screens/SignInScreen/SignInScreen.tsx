@@ -1,26 +1,73 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Animated, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { CustomButton } from "../../../.storybook/stories/CustomButton/CustomButton";
 import { CustomInput } from "../../../.storybook/stories/CustomInput/CustomInput";
 import { RootStackParamList } from "../../types/navigation/navigation";
+import { AppDispatch, RootState } from "../../redux/ReduxStore/store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { RootNavigationNames, UserType } from "../../types";
 import { colors, fontSize, spacing } from "../../theme";
-import { RootNavigationNames } from "../../types";
+import { useFadeAnimation, useForm } from "../../hooks";
+import { useDispatch, useSelector } from "react-redux";
 import { HeaderNavigator } from "../../component";
-import { useFadeAnimation } from "../../hooks";
 import { AntDesign } from "@expo/vector-icons";
+import { authUser } from "../../redux";
 
 type SignInScreenRouteProp = RouteProp<RootStackParamList, "SignInScreen">;
 interface SignInScreenProps {
   route: SignInScreenRouteProp;
 }
+//TODO: add types to this
+export const SignInScreen = (props) => {
+  const company_code = props.route.params?.company_code;
+  const userType = props.route.params?.userType;
 
-export const SignInScreen = ({ route }: SignInScreenProps) => {
-  const company_code = route.params?.company_code;
-  const userType = route.params?.userType;
   const navigate = useNavigation<RootNavigationNames>();
   const { fadeAnim } = useFadeAnimation(1000);
+
+  const initialState = {
+    email: "",
+    password: "",
+  };
+
+  const { formData, handleChange, resetForm } = useForm(initialState);
+
+  const dispatch = useDispatch<AppDispatch>();
+  const { response, error, loading } = useSelector(
+    (state: RootState) => state.userAuth
+  );
+
+  const onHandleSubmit = () => {
+    try {
+      dispatch(
+        authUser({
+          email: formData.email,
+          password: formData.password,
+          company_code,
+          userType,
+          path: "login",
+        })
+      );
+      resetForm();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (response.token) {
+      AsyncStorage.setItem("token", response.token);
+      AsyncStorage.setItem("user-type", response.userType).then(() => {
+        if (response.userType === UserType.CUSTOMER) {
+          navigate.navigate("PredefineCalendar");
+          props.setLogged(true);
+        }
+      });
+    }
+  }, [response.token]);
+
   return (
     <View style={styles.mainContainer}>
       <SafeAreaView style={styles.safeAreaViewStyle}>
@@ -52,17 +99,20 @@ export const SignInScreen = ({ route }: SignInScreenProps) => {
 
           <CustomInput
             size="medium"
-            placeholder="Email or username"
-            onChangeText={() => {}}
+            placeholder="Email"
+            onChangeText={(text) => handleChange("email", text)}
+            value={formData.email}
             mainContainerStyles={{
               marginVertical: spacing.size_large,
             }}
             placeholderTextColor={colors.color_400}
           />
           <CustomInput
+            secureTextEntry
             size="medium"
             placeholder="Password"
-            onChangeText={() => {}}
+            onChangeText={(text) => handleChange("password", text)}
+            value={formData.password}
             placeholderTextColor={colors.color_400}
           />
 
@@ -95,11 +145,7 @@ export const SignInScreen = ({ route }: SignInScreenProps) => {
               </Text>
             </TouchableOpacity>
           </Text>
-          <CustomButton
-            text="Log in"
-            size="medium"
-            onPress={() => navigate.navigate("CustomerListScreen")}
-          />
+          <CustomButton text="Log in" size="medium" onPress={onHandleSubmit} />
         </Animated.View>
       </SafeAreaView>
     </View>

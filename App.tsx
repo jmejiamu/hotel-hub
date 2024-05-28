@@ -9,12 +9,11 @@ import { StackNav } from "./src/navigation";
 
 function App() {
   return (
-    <NavigationContainer>
-      <ReduxProvider store={store}>
-        {/* <TestCompnoent /> */}
+    <ReduxProvider store={store}>
+      <NavigationContainer>
         <StackNav />
-      </ReduxProvider>
-    </NavigationContainer>
+      </NavigationContainer>
+    </ReduxProvider>
   );
 }
 

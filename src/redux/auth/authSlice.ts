@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { UserType } from "../../types/usersType/usersType";
 
 interface Response {
   message: string;
@@ -30,23 +29,27 @@ const initialState: AuthState = {
 };
 interface UserData {
   email: string;
-  username: string;
+  username?: string;
   password: string;
-  company_code: string;
+  company_code?: string;
   userType: string;
+  path: string;
 }
 
-export const registerUser = createAsyncThunk(
-  "auth/registerUser",
+export const authUser = createAsyncThunk(
+  "auth/authUser",
   async (userData: UserData, thunkAPI) => {
     try {
-      const response = await fetch("http://localhost:3000/api-v1/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
+      const response = await fetch(
+        `http://localhost:3000/api-v1/${userData.path}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        }
+      );
 
       const res = await response.json();
       return res;
@@ -56,23 +59,51 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+export const logoutUser = createAsyncThunk(
+  "auth/logoutUser",
+  async (_, { dispatch }) => {
+    try {
+      await AsyncStorage.multiRemove(["token", "user-type"]);
+      dispatch(clearUserState());
+    } catch (error) {
+      console.error("Failed to log out: file authSlice", error);
+      throw error;
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    clearUserState: (state) => {
+      state.response = {
+        message: "",
+        status: 0,
+        token: "",
+        username: "",
+        userType: "",
+        user_id: "",
+      };
+      state.loading = false;
+      state.error = false;
+    },
+  },
   extraReducers: (builder) => {
-    builder.addCase(registerUser.pending, (state, action) => {
+    builder.addCase(authUser.pending, (state, action) => {
       state.loading = true;
     });
-    builder.addCase(registerUser.fulfilled, (state, action) => {
+    builder.addCase(authUser.fulfilled, (state, action) => {
       state.loading = false;
       state.response = action.payload;
     });
-    builder.addCase(registerUser.rejected, (state, action) => {
+    builder.addCase(authUser.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as any;
     });
   },
 });
+
+export const { clearUserState } = authSlice.actions;
 
 export default authSlice.reducer;
