@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AppDispatch } from "../../redux/ReduxStore/store";
 import { useNavigation } from "@react-navigation/native";
 import { TimelineCalendar } from "@howljs/calendar-kit";
 import { generateYearlyEvents } from "../../utils";
@@ -9,21 +9,23 @@ import { RootNavigationNames } from "../../types";
 import { AntDesign } from "@expo/vector-icons";
 import { colors, spacing } from "../../theme";
 import { eventConfigs } from "./eventConfig";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../redux";
 
 export const PredefineCalendar = (props) => {
   const { setLogged } = props;
 
   const predefinedEvents = generateYearlyEvents(eventConfigs);
   const navigate = useNavigation<RootNavigationNames>();
+  const dispatch = useDispatch<AppDispatch>();
 
   const onHandleLogout = async () => {
     try {
-      await AsyncStorage.removeItem("token");
-      await AsyncStorage.removeItem("user-type");
+      dispatch(logoutUser()).unwrap();
       setLogged(false);
       navigate.navigate("CustomerEmployeeScreen");
     } catch (e) {
-      console.log(e);
+      console.log("Logout failed", e);
     }
   };
 

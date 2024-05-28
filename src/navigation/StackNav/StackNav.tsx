@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createStackNavigator } from "@react-navigation/stack";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { CalendarScreen } from "../../screens/CalendarScreen";
+import { RootStackParamList, UserType } from "../../types";
+import { RootState } from "../../redux/ReduxStore/store";
+import { StyleSheet } from "react-native";
+import { useSelector } from "react-redux";
+import { Loading } from "../../component";
 import {
   CompanyCodeScreen,
   CustomerListScreen,
@@ -9,19 +15,12 @@ import {
   RegisterScreen,
   SignInScreen,
 } from "../../screens";
-import { CalendarScreen } from "../../screens/CalendarScreen";
-import { RootState } from "../../redux/ReduxStore/store";
-import { RootStackParamList, UserType } from "../../types";
-import { useSelector } from "react-redux";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { colors, fontSize, spacing } from "../../theme";
-import { Loading } from "../../component";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 export const StackNav = () => {
   const { response, error, loading } = useSelector(
-    (state: RootState) => state.register
+    (state: RootState) => state.userAuth
   );
   const [userToken, setUserToken] = useState<string | null>("");
   const [userType, setUserType] = useState<string | null>("");
@@ -75,6 +74,10 @@ export const StackNav = () => {
     <PredefineCalendar {...props} setLogged={setAuth} />
   );
 
+  const LoginScreen = (props) => (
+    <SignInScreen {...props} setLogged={setAuth} />
+  );
+
   if (loading) {
     return <Loading />;
   }
@@ -111,7 +114,7 @@ export const StackNav = () => {
               headerShown: false,
             }}
             name="SignInScreen"
-            component={SignInScreen}
+            component={LoginScreen}
           />
           <Stack.Screen
             options={{

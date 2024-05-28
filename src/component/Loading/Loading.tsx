@@ -1,5 +1,5 @@
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { colors, fontSize, spacing } from "../../theme";
 
 export const Loading = () => {

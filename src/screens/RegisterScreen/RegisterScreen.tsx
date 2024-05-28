@@ -7,11 +7,11 @@ import { AppDispatch, RootState } from "../../redux/ReduxStore/store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { registerUser } from "../../redux/auth/authSlice";
 import { colors, fontSize, spacing } from "../../theme";
+import { useFadeAnimation, useForm } from "../../hooks";
+import { authUser } from "../../redux/auth/authSlice";
 import { HeaderNavigator } from "../../component";
 import { AntDesign } from "@expo/vector-icons";
-import { useFadeAnimation } from "../../hooks";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 
@@ -20,7 +20,7 @@ type RegisterScreenRouteProp = RouteProp<RootStackParamList, "RegisterScreen">;
 interface RegisterScreenProps {
   route: RegisterScreenRouteProp;
 }
-//TODO: add props to this
+//TODO: add types to this
 export const RegisterScreen = (props) => {
   const company_code = props.route.params!.company_code;
   const userType = props.route.params!.userType;
@@ -28,21 +28,33 @@ export const RegisterScreen = (props) => {
   const navigate = useNavigation<RootNavigationNames>();
   const { fadeAnim } = useFadeAnimation(1000);
 
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const initialState = {
+    email: "",
+    password: "",
+    username: "",
+  };
+
+  const { formData, handleChange, resetForm } = useForm(initialState);
 
   const dispatch = useDispatch<AppDispatch>();
 
   const { response, error, loading } = useSelector(
-    (state: RootState) => state.register
+    (state: RootState) => state.userAuth
   );
 
   const onHandleSubmit = () => {
     try {
       dispatch(
-        registerUser({ email, username, password, company_code, userType })
+        authUser({
+          email: formData.email,
+          username: formData.username,
+          password: formData.password,
+          company_code,
+          userType,
+          path: "register",
+        })
       );
+      resetForm();
     } catch (error) {
       console.log(error);
     }
@@ -93,8 +105,8 @@ export const RegisterScreen = (props) => {
         <CustomInput
           size="medium"
           placeholder="Email"
-          onChangeText={setEmail}
-          textValue={email}
+          onChangeText={(text) => handleChange("email", text)}
+          textValue={formData.email}
           mainContainerStyles={{
             marginVertical: spacing.size_large,
           }}
@@ -103,8 +115,8 @@ export const RegisterScreen = (props) => {
         <CustomInput
           size="medium"
           placeholder="Name"
-          onChangeText={setUsername}
-          textValue={username}
+          onChangeText={(text) => handleChange("username", text)}
+          textValue={formData.username}
           mainContainerStyles={{
             marginBottom: spacing.size_large,
           }}
@@ -114,8 +126,8 @@ export const RegisterScreen = (props) => {
           secureTextEntry={true}
           size="medium"
           placeholder="Password"
-          onChangeText={setPassword}
-          textValue={password}
+          onChangeText={(text) => handleChange("password", text)}
+          textValue={formData.password}
           placeholderTextColor={colors.color_400}
         />
 
