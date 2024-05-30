@@ -92,13 +92,18 @@ export const StackNav = () => {
               options={{ headerShown: false }}
             />
           )}
-          {userType === UserType.FRONTEND_DESK && (
+          {/* TODO: change this logic  for type of users*/}
+          {userType === UserType.HEALER && (
             <>
               <Stack.Screen
                 name="CalendarScreen"
                 component={CalendarScreen}
                 options={{ headerShown: false }}
               />
+            </>
+          )}
+          {userType === UserType.FRONTEND_DESK && (
+            <>
               <Stack.Screen
                 name="CustomerListScreen"
                 component={CustomerListScreen}

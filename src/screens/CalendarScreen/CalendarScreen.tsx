@@ -120,12 +120,6 @@ export const CalendarScreen = () => {
             />
           }
           rightElement={
-            // <AntDesign
-            //   onPress={() => navigate.navigate("SettingsScreen")}
-            //   name="setting"
-            //   size={24}
-            //   color={colors.color_400}
-            // />
             <AntDesign
               onPress={onHandleLogout}
               name="logout"
