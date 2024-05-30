@@ -1,11 +1,10 @@
-import { Image, StyleSheet, View } from "react-native";
-import Constants from "expo-constants";
+import { NavigationContainer } from "@react-navigation/native";
 import { Provider as ReduxProvider } from "react-redux";
 import store from "./src/redux/ReduxStore/store";
-import { TestCompnoent } from "./src/component/TestCompnoent";
-import { NavigationContainer } from "@react-navigation/native";
-import "react-native-gesture-handler";
 import { StackNav } from "./src/navigation";
+import { StyleSheet } from "react-native";
+import Constants from "expo-constants";
+import "react-native-gesture-handler";
 
 function App() {
   return (
