@@ -1,50 +1,46 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FlatList, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { CustomInput } from "../../../.storybook/stories/CustomInput/CustomInput";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Avatar } from "../../../.storybook/stories/Avatar/Avatar";
+import { AppDispatch, RootState } from "../../redux/ReduxStore/store";
 import { useNavigation } from "@react-navigation/native";
 import { colors, fontSize, spacing } from "../../theme";
+import { customerList, logoutUser } from "../../redux";
 import { Entypo, AntDesign } from "@expo/vector-icons";
 import { HeaderNavigator } from "../../component";
 import { RootNavigationNames } from "../../types";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
-const customerDate = [
-  {
-    id: 1,
-    name: "John Doe",
-    type: "Guest",
-  },
-  {
-    id: 2,
-    name: "Maria Rodriguez",
-    type: "Guest",
-  },
-  {
-    id: 3,
-    name: "Edward Cross",
-    type: "Guest",
-  },
-  {
-    id: 4,
-    name: "James Doll",
-    type: "Guest",
-  },
-];
-
-export const CustomerListScreen = () => {
+export const CustomerListScreen = (props) => {
   const navigate = useNavigation<RootNavigationNames>();
+  const dispatch = useDispatch<AppDispatch>();
+  const { customers, error, loading } = useSelector(
+    (state: RootState) => state.customers
+  );
 
-  // TODO: Fix the log out
+  const { setLogged } = props;
+
   const onHandleLogout = async () => {
     try {
-      await AsyncStorage.removeItem("token");
-      await AsyncStorage.removeItem("user-type");
+      dispatch(logoutUser()).unwrap();
+      setLogged(false);
       navigate.navigate("CustomerEmployeeScreen");
     } catch (e) {
       console.log(e);
     }
   };
+
+  useEffect(() => {
+    dispatch(customerList());
+  }, [dispatch]);
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+  if (error) {
+    return <Text>Error...</Text>;
+  }
   return (
     <SafeAreaView style={styles.mainContainer}>
       <View style={styles.headerContainer}>
@@ -75,7 +71,7 @@ export const CustomerListScreen = () => {
         />
       </View>
       <FlatList
-        data={customerDate}
+        data={customers}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View>
@@ -89,9 +85,9 @@ export const CustomerListScreen = () => {
                   numberOfLines={1}
                   style={styles.titleStyle}
                 >
-                  {item.name}
+                  {item.username}
                 </Text>
-                <Text style={styles.subtitleStyle}>{item.type}</Text>
+                <Text style={styles.subtitleStyle}>Guest</Text>
               </View>
               <View style={styles.iconContainer}>
                 <Entypo
@@ -103,6 +99,9 @@ export const CustomerListScreen = () => {
             </View>
             <View style={styles.lineDivider} />
           </View>
+        )}
+        ListEmptyComponent={() => (
+          <Text style={{ color: "white" }}>No Customers yet...</Text>
         )}
       />
     </SafeAreaView>

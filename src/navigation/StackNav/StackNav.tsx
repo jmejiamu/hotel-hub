@@ -78,6 +78,10 @@ export const StackNav = () => {
     <SignInScreen {...props} setLogged={setAuth} />
   );
 
+  const CustomerList = (props) => (
+    <CustomerListScreen {...props} setLogged={setAuth} />
+  );
+
   if (loading) {
     return <Loading />;
   }
@@ -106,7 +110,7 @@ export const StackNav = () => {
             <>
               <Stack.Screen
                 name="CustomerListScreen"
-                component={CustomerListScreen}
+                component={CustomerList}
                 options={{ headerShown: false }}
               />
             </>
