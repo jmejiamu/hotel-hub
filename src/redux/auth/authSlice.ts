@@ -1,19 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
-interface Response {
-  message: string;
-  status: number;
-  token: string;
-  username: string;
-  userType: string;
-  user_id: string;
-}
-interface AuthState {
-  response: Response;
-  loading: boolean;
-  error: boolean;
-}
+import { AuthState, UserData } from "./types";
 
 const initialState: AuthState = {
   response: {
@@ -27,14 +14,6 @@ const initialState: AuthState = {
   loading: false,
   error: false,
 };
-interface UserData {
-  email: string;
-  username?: string;
-  password: string;
-  company_code?: string;
-  userType: string;
-  path: string;
-}
 
 export const authUser = createAsyncThunk(
   "auth/authUser",
