@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Animated, StyleSheet, Text, TouchableOpacity } from "react-native";
+import React, { useEffect } from "react";
+import { Animated, Text, TouchableOpacity } from "react-native";
 import { CustomButton } from "../../../.storybook/stories/CustomButton/CustomButton";
 import { CustomInput } from "../../../.storybook/stories/CustomInput/CustomInput";
 import { RootNavigationNames, RootStackParamList, UserType } from "../../types";
@@ -7,13 +7,14 @@ import { AppDispatch, RootState } from "../../redux/ReduxStore/store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { colors, fontSize, spacing } from "../../theme";
 import { useFadeAnimation, useForm } from "../../hooks";
 import { authUser } from "../../redux/auth/authSlice";
 import { HeaderNavigator } from "../../component";
 import { AntDesign } from "@expo/vector-icons";
+import { colors, spacing } from "../../theme";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { styles } from "./styles";
 
 type RegisterScreenRouteProp = RouteProp<RootStackParamList, "RegisterScreen">;
 
@@ -153,30 +154,9 @@ export const RegisterScreen = (props) => {
         <CustomButton
           text="Register"
           size="medium"
-          onPress={() => {
-            onHandleSubmit();
-          }}
+          onPress={() => onHandleSubmit()}
         />
       </Animated.View>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  mainContainer: {
-    backgroundColor: colors.color_100,
-    flex: 1,
-  },
-  innerContainer: {
-    marginHorizontal: spacing.size_small,
-  },
-  titleStyle: {
-    fontSize: fontSize.size_xt_large,
-    color: colors.color_400,
-    marginVertical: "10%",
-  },
-  subTitleStyle: {
-    color: colors.color_400,
-    fontSize: fontSize.size_medium,
-  },
-});

@@ -1,25 +1,19 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { CustomButton } from "../../../.storybook/stories/CustomButton/CustomButton";
 import { CustomInput } from "../../../.storybook/stories/CustomInput/CustomInput";
-import { Animated, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Animated, SafeAreaView, Text, View } from "react-native";
+import { RootNavigationNames, UserType } from "../../types";
 import { useNavigation } from "@react-navigation/native";
-import { colors, fontSize, spacing } from "../../theme";
 import { HeaderNavigator } from "../../component";
 import { AntDesign } from "@expo/vector-icons";
-import { RootNavigationNames, UserType } from "../../types";
+import { useFadeAnimation } from "../../hooks";
+import { colors, spacing } from "../../theme";
+import { styles } from "./styles";
 
 export const CompanyCodeScreen = () => {
   const navigate = useNavigation<RootNavigationNames>();
-  const fadeAnim = useRef(new Animated.Value(0)).current;
   const [companyCode, setCompanyCode] = useState("");
-
-  useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start();
-  }, []);
+  const { fadeAnim } = useFadeAnimation(1000);
 
   return (
     <View style={styles.mainContainer}>
@@ -57,9 +51,7 @@ export const CompanyCodeScreen = () => {
             placeholder="Company code"
             onChangeText={setCompanyCode}
             textValue={companyCode}
-            mainContainerStyles={{
-              marginVertical: spacing.size_large,
-            }}
+            mainContainerStyles={styles.inputStyle}
             placeholderTextColor={colors.color_400}
           />
           <View style={{ flexDirection: "row" }}>
@@ -84,12 +76,7 @@ export const CompanyCodeScreen = () => {
               }
               text="Frontend Desk"
               size="medium"
-              mainContainerStyles={{
-                flex: 1,
-                backgroundColor: "transparent",
-                borderWidth: 1,
-                borderColor: colors.color_300,
-              }}
+              mainContainerStyles={styles.btnStyle}
               textStyles={{ color: colors.color_300 }}
             />
           </View>
@@ -98,22 +85,3 @@ export const CompanyCodeScreen = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  divider: {
-    margin: spacing.size_medium,
-  },
-  subTitleStyle: {
-    color: colors.color_400,
-    fontSize: fontSize.size_medium,
-  },
-  titleStyle: {
-    fontSize: fontSize.size_xt_large,
-    color: colors.color_400,
-    marginVertical: "20%",
-  },
-  mainContainer: {
-    backgroundColor: colors.color_100,
-    flex: 1,
-  },
-});
