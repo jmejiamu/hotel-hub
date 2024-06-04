@@ -82,6 +82,10 @@ export const StackNav = () => {
     <CustomerListScreen {...props} setLogged={setAuth} />
   );
 
+  const HealerCalendar = (props) => (
+    <CalendarScreen {...props} setLogged={setAuth} />
+  );
+
   if (loading) {
     return <Loading />;
   }
@@ -101,7 +105,7 @@ export const StackNav = () => {
             <>
               <Stack.Screen
                 name="CalendarScreen"
-                component={CalendarScreen}
+                component={HealerCalendar}
                 options={{ headerShown: false }}
               />
             </>

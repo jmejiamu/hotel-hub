@@ -1,45 +1,58 @@
 import React, { useState } from "react";
-import { CustomButton } from "../../../.storybook/stories/CustomButton/CustomButton";
-import { Alert, Animated, Image, Modal, Text, View } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import DropDownPicker from "react-native-dropdown-picker";
+import { Image, TouchableOpacity, View } from "react-native";
+import { EventItem, PackedEvent, RangeTime } from "@howljs/calendar-kit";
+import { AppDispatch, RootState } from "../../redux/ReduxStore/store";
 import { useNavigation } from "@react-navigation/native";
-import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { useSelector, useDispatch } from "react-redux";
 import { RootNavigationNames } from "../../types";
-import { HeaderNavigator } from "../../component";
+import { AntDesign } from "@expo/vector-icons";
 import { useFadeAnimation } from "../../hooks";
-import { colors, spacing } from "../../theme";
-import {
-  EventItem,
-  PackedEvent,
-  RangeTime,
-  TimelineCalendar,
-} from "@howljs/calendar-kit";
+import { logoutUser } from "../../redux";
+import { colors } from "../../theme";
 import { styles } from "./styles";
+import {
+  CalendarFooter,
+  HeaderNavigator,
+  CustomCalendar,
+  FadeView,
+} from "../../component";
+import { CalendarModal } from "../../component/CalendarModal";
 
-export const CalendarScreen = () => {
-  const [events, setEvents] = useState<EventItem[]>([]);
+export const CalendarScreen = (props) => {
   const [selectedEvent, setSelectedEvent] = useState<PackedEvent>();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [events, setEvents] = useState<EventItem[]>([]);
   const navigate = useNavigation<RootNavigationNames>();
   const { fadeAnim } = useFadeAnimation(1000);
+  const [eventId, setEventId] = useState("");
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
+  const { setLogged } = props;
+
+  const dispatch = useDispatch<AppDispatch>();
+
   const [items, setItems] = useState([
+    { label: "none", value: "none" },
     { label: "Room1", value: "room1" },
     { label: "Room2", value: "room2" },
     { label: "Room3", value: "room3" },
   ]);
 
+  const { response, error, loading } = useSelector(
+    (state: RootState) => state.userAuth
+  );
+
   const _onDragCreateEnd = (event: RangeTime) => {
     const randomId = Math.random().toString(36).slice(2, 10);
     const newEvent = {
       id: randomId,
-      title: randomId,
+      title: response.username,
       start: event.start,
       end: event.end,
       color: "#B1AFFF",
       description: "Hello world",
+      user_id: response.user_id,
+      userType: response.userType,
     };
     setEvents((prev) => [...prev, newEvent]);
   };
@@ -63,24 +76,11 @@ export const CalendarScreen = () => {
     );
     setSelectedEvent(undefined);
   };
-  const _renderEditFooter = () => {
-    return (
-      <View style={styles.footer}>
-        <View style={{ flex: 1 }}>
-          <CustomButton text="cancel" onPress={_onPressCancel} />
-        </View>
-        <View style={{ margin: spacing.size_small }} />
-        <View style={{ flex: 1 }}>
-          <CustomButton text="Save" onPress={_onPressSubmit} />
-        </View>
-      </View>
-    );
-  };
 
   const onHandleLogout = async () => {
     try {
-      await AsyncStorage.removeItem("token");
-      await AsyncStorage.removeItem("user-type");
+      dispatch(logoutUser()).unwrap();
+      setLogged(false);
       navigate.navigate("CustomerEmployeeScreen");
     } catch (e) {
       console.log(e);
@@ -88,37 +88,13 @@ export const CalendarScreen = () => {
   };
 
   return (
-    <Animated.View
-      style={{
-        flex: 1,
-        opacity: fadeAnim,
-        transform: [
-          {
-            translateY: fadeAnim.interpolate({
-              inputRange: [0, 1],
-              outputRange: [50, 0],
-            }),
-          },
-        ],
-      }}
-    >
+    <FadeView fadeAnim={fadeAnim}>
       <View style={styles.headerContainer}>
         <HeaderNavigator
-          leftElement={
-            <AntDesign
-              onPress={() => navigate.goBack()}
-              name="arrowleft"
-              size={24}
-              color={colors.color_400}
-            />
-          }
           rightElement={
-            <AntDesign
-              onPress={onHandleLogout}
-              name="logout"
-              size={24}
-              color={colors.color_400}
-            />
+            <TouchableOpacity onPress={onHandleLogout}>
+              <AntDesign name="logout" size={24} color={colors.color_400} />
+            </TouchableOpacity>
           }
           containerStyle={{ justifyContent: "space-between" }}
         />
@@ -127,94 +103,37 @@ export const CalendarScreen = () => {
         source={require("../../../assets/def-cal.jpg")}
         style={styles.headerImage}
       />
-      <TimelineCalendar
-        viewMode="week"
+
+      <CustomCalendar
+        canlendarView="week"
         events={events}
-        allowDragToCreate
         onDragCreateEnd={_onDragCreateEnd}
         onLongPressEvent={_onLongPressEvent}
-        renderEventContent={(event) => (
-          <View>
-            <Text>{event.title}</Text>
-            <Text>{event.description}</Text>
-          </View>
-        )}
         selectedEvent={selectedEvent}
-        onEndDragSelectedEvent={setSelectedEvent}
-        // Optional
-        dragStep={20}
-        dragCreateInterval={120}
-        theme={{
-          dragHourContainer: {
-            backgroundColor: "#FFF",
-            borderColor: "#001253",
-          },
-          dragHourText: { color: "#001253" },
-          editIndicatorColor: "#FFF",
-        }}
-        // End Optional
-        // TODO:implement a modal with the room number.
-        onPressEvent={
-          (event) => {
-            console.log("onPressEvent", event);
-            setModalVisible(true);
-          }
-          // Do something with the event
-        }
-        // Custom edit indicator
-        EditIndicatorComponent={
-          <View style={styles.footerEventStyle}>
-            <Ionicons name="reorder-two-outline" size={24} color="black" />
-          </View>
-        }
+        setSelectedEvent={setSelectedEvent}
+        setEventId={setEventId}
+        setModalVisible={setModalVisible}
       />
-      {!!selectedEvent && _renderEditFooter()}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Select room</Text>
-            <DropDownPicker
-              open={open}
-              value={value}
-              items={items}
-              setOpen={setOpen}
-              setValue={setValue}
-              setItems={setItems}
-            />
-            {/* TODO: Add the details data here */}
-            {events.map((item, index) => {
-              return (
-                <View key={index}>
-                  <Text>{item.title}</Text>
-                  <Text>{item.description}</Text>
-                </View>
-              );
-            })}
-            <View style={styles.buttonContainer}>
-              <View style={styles.btnInnerContainer}>
-                <View style={{ flex: 1 }}>
-                  <CustomButton text="Send" onPress={() => {}} />
-                </View>
-                <View style={{ margin: spacing.size_small }} />
-                <View style={{ flex: 1 }}>
-                  <CustomButton
-                    text="Cancel"
-                    onPress={() => setModalVisible(!modalVisible)}
-                  />
-                </View>
-              </View>
-            </View>
-          </View>
-        </View>
-      </Modal>
-    </Animated.View>
+
+      {!!selectedEvent && (
+        <CalendarFooter
+          onPressCancel={_onPressCancel}
+          onPressSubmit={_onPressSubmit}
+        />
+      )}
+      <CalendarModal
+        animationType="fade"
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        events={events}
+        eventId={eventId}
+        setOpen={setOpen}
+        open={open}
+        value={value}
+        setValue={setValue}
+        items={items}
+        setItems={setItems}
+      />
+    </FadeView>
   );
 };

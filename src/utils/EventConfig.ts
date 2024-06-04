@@ -7,7 +7,6 @@ import {
   setMinutes,
   nextDay,
   Day,
-  setSeconds,
 } from "date-fns";
 
 export interface EventConfig {
