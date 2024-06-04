@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { FlatList, SafeAreaView, Text, View } from "react-native";
 import { CustomInput } from "../../../.storybook/stories/CustomInput/CustomInput";
-import { Avatar } from "../../../.storybook/stories/Avatar/Avatar";
 import { AppDispatch, RootState } from "../../redux/ReduxStore/store";
+import { Avatar } from "../../../.storybook/stories/Avatar/Avatar";
 import { useNavigation } from "@react-navigation/native";
 import { customerList, logoutUser } from "../../redux";
 import { Entypo, AntDesign } from "@expo/vector-icons";

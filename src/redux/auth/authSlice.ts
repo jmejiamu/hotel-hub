@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { AuthState, UserData } from "./types";
 
 const initialState: AuthState = {
@@ -55,6 +55,12 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    setUser: (state, action: PayloadAction<AuthState>) => {
+      const { response, error, loading } = action.payload;
+      state.response = response;
+      state.error = error;
+      state.loading = loading;
+    },
     clearUserState: (state) => {
       state.response = {
         message: "",
@@ -83,6 +89,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearUserState } = authSlice.actions;
+export const { setUser, clearUserState } = authSlice.actions;
 
 export default authSlice.reducer;
