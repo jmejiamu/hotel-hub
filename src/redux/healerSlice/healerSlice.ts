@@ -27,7 +27,7 @@ export const healerCalendar = createAsyncThunk(
       const response = await fetch(
         `http://localhost:3000/api-v1/${userData.path}`,
         {
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
