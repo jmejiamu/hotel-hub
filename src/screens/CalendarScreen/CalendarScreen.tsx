@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { Image, TouchableOpacity, View } from "react-native";
 import { EventItem, PackedEvent, RangeTime } from "@howljs/calendar-kit";
 import { AppDispatch, RootState } from "../../redux/ReduxStore/store";
+import { healerCalendar, logoutUser } from "../../redux";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
 import { RootNavigationNames } from "../../types";
 import { AntDesign } from "@expo/vector-icons";
 import { useFadeAnimation } from "../../hooks";
-import { logoutUser } from "../../redux";
 import { colors } from "../../theme";
 import { styles } from "./styles";
 import {
@@ -17,6 +17,17 @@ import {
   FadeView,
 } from "../../component";
 import { CalendarModal } from "../../component/CalendarModal";
+
+interface CalendarEvent {
+  id: string;
+  title: string;
+  start: string;
+  end: string;
+  color: string;
+  description: string;
+  user_id: string;
+  userType: string;
+}
 
 export const CalendarScreen = (props) => {
   const [selectedEvent, setSelectedEvent] = useState<PackedEvent>();
@@ -72,6 +83,24 @@ export const CalendarScreen = (props) => {
           return { ...ev, ...selectedEvent };
         }
         return ev;
+      })
+    );
+    const oneEvent = events.map((item, index) => {
+      if (item.id === selectedEvent?.id) {
+        return item;
+      }
+    });
+    dispatch(
+      healerCalendar({
+        user_id: oneEvent[0]?.user_id,
+        userType: oneEvent[0]?.userType,
+        eventTitle: oneEvent[0]?.title || "",
+        eventDescription: oneEvent[0]?.description,
+        eventStartDate:
+          new Date(String(oneEvent[0]?.start)).getTime().toString() || "",
+        eventEndDate:
+          new Date(String(oneEvent[0]?.end)).getTime().toString() || "",
+        path: "healer-calendar",
       })
     );
     setSelectedEvent(undefined);
