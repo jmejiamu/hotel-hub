@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 interface HealerState {
+  event_id: string;
   user_id: string;
   userType: string;
   eventTitle: string;
@@ -11,6 +12,7 @@ interface HealerState {
 }
 
 const initialState: HealerState = {
+  event_id: "",
   user_id: "",
   userType: "",
   eventTitle: "",
@@ -56,6 +58,7 @@ const healerSlice = createSlice({
       state.eventStartDate = "";
       state.eventEndDate = "";
       state.path = "";
+      state.event_id = "";
     });
     builder.addCase(healerCalendar.fulfilled, (state, action) => {
       state.user_id = action.payload.user_id;
@@ -64,6 +67,7 @@ const healerSlice = createSlice({
       state.eventDescription = action.payload.eventDescription;
       state.eventStartDate = action.payload.eventStartDate;
       state.eventEndDate = action.payload.eventEndDate;
+      state.event_id = action.payload.event_id;
     });
     builder.addCase(healerCalendar.rejected, (state) => {
       state.user_id = "";

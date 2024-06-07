@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, TouchableOpacity, View } from "react-native";
 import { EventItem, PackedEvent, RangeTime } from "@howljs/calendar-kit";
 import { AppDispatch, RootState } from "../../redux/ReduxStore/store";
-import { healerCalendar, logoutUser } from "../../redux";
+import { healerCalendar, healersSchedule, logoutUser } from "../../redux";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
 import { RootNavigationNames } from "../../types";
@@ -17,6 +17,7 @@ import {
   FadeView,
 } from "../../component";
 import { CalendarModal } from "../../component/CalendarModal";
+import uuid from "react-native-uuid";
 
 interface CalendarEvent {
   id: string;
@@ -52,11 +53,16 @@ export const CalendarScreen = (props) => {
   const { response, error, loading } = useSelector(
     (state: RootState) => state.userAuth
   );
+  const { response: res } = useSelector(
+    (state: RootState) => state.healerGetSchedule
+  );
 
   const _onDragCreateEnd = (event: RangeTime) => {
-    const randomId = Math.random().toString(36).slice(2, 10);
+    const event_id = uuid.v1();
+    console.log("HERER", event_id);
+
     const newEvent = {
-      id: randomId,
+      id: String(event_id),
       title: response.username,
       start: event.start,
       end: event.end,
@@ -80,29 +86,24 @@ export const CalendarScreen = (props) => {
     setEvents((prevEvents) =>
       prevEvents.map((ev) => {
         if (ev.id === selectedEvent?.id) {
+          dispatch(
+            healerCalendar({
+              event_id: selectedEvent.id,
+              user_id: response?.user_id,
+              userType: response?.userType,
+              eventTitle: selectedEvent?.title || "",
+              eventDescription: selectedEvent.description,
+              eventStartDate: selectedEvent.start,
+              eventEndDate: selectedEvent.end,
+              path: "healer-calendar",
+            })
+          );
           return { ...ev, ...selectedEvent };
         }
         return ev;
       })
     );
-    const oneEvent = events.map((item, index) => {
-      if (item.id === selectedEvent?.id) {
-        return item;
-      }
-    });
-    dispatch(
-      healerCalendar({
-        user_id: oneEvent[0]?.user_id,
-        userType: oneEvent[0]?.userType,
-        eventTitle: oneEvent[0]?.title || "",
-        eventDescription: oneEvent[0]?.description,
-        eventStartDate:
-          new Date(String(oneEvent[0]?.start)).getTime().toString() || "",
-        eventEndDate:
-          new Date(String(oneEvent[0]?.end)).getTime().toString() || "",
-        path: "healer-calendar",
-      })
-    );
+
     setSelectedEvent(undefined);
   };
 
@@ -115,6 +116,34 @@ export const CalendarScreen = (props) => {
       console.log(e);
     }
   };
+
+  useEffect(() => {
+    if (response.user_id) {
+      dispatch(
+        healersSchedule({
+          user_id: response.user_id,
+          userType: response.userType,
+        })
+      );
+    }
+  }, [response.user_id]);
+
+  useEffect(() => {
+    if (res.length > 0) {
+      setEvents(
+        res.map((item) => ({
+          id: item.event_id,
+          title: item.event_title,
+          start: item.event_start,
+          end: item.event_end,
+          color: "#B1AFFF",
+          description: item.event_description,
+          user_id: item.user_id,
+          userType: item.userType,
+        }))
+      );
+    }
+  }, []);
 
   return (
     <FadeView fadeAnim={fadeAnim}>
