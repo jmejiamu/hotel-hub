@@ -59,7 +59,6 @@ export const CalendarScreen = (props) => {
 
   const _onDragCreateEnd = (event: RangeTime) => {
     const event_id = uuid.v1();
-    console.log("HERER", event_id);
 
     const newEvent = {
       id: String(event_id),
