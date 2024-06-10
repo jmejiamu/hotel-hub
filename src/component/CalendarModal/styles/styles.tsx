@@ -34,4 +34,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
   },
+  boldText: {
+    fontWeight: "bold",
+  },
 });

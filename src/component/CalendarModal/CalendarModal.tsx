@@ -57,11 +57,23 @@ export const CalendarModal = (props: CalProps) => {
             {/* TODO: Add the details data here */}
             {events.map((item: EventItem, index: number) => {
               return (
-                <View key={index}>
+                <View style={{ marginVertical: 5 }} key={index}>
                   {item.id === eventId && (
                     <>
-                      <Text>{item.title}</Text>
-                      <Text>{item.description}</Text>
+                      <Text>
+                        <Text style={styles.boldText}>Healer:</Text> @
+                        {item.title}
+                      </Text>
+                      <Text>
+                        <Text style={styles.boldText}>Spa treatment:</Text>
+                        {item.description}
+                      </Text>
+                      <Text>
+                        <Text style={styles.boldText}>Room:</Text>{" "}
+                      </Text>
+                      <Text>
+                        <Text style={styles.boldText}>Date & time: </Text>{" "}
+                      </Text>
                     </>
                   )}
                 </View>
