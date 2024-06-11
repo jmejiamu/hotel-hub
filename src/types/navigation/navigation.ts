@@ -1,4 +1,5 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { FrontendCalendar } from "../../screens/FrontEndCalendar/FrontendCalendar";
 
 export type RootStackParamList = {
   CustomerEmployeeScreen: undefined;
@@ -12,6 +13,7 @@ export type RootStackParamList = {
   CalendarScreen: undefined;
   CustomerListScreen: undefined;
   PredefineCalendar: undefined;
+  FrontendCalendar: undefined;
 };
 
 export type RootNavigationNames = NativeStackNavigationProp<RootStackParamList>;

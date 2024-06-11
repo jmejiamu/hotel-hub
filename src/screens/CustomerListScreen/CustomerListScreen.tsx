@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { FlatList, SafeAreaView, Text, View } from "react-native";
+import {
+  FlatList,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { CustomInput } from "../../../.storybook/stories/CustomInput/CustomInput";
 import { AppDispatch, RootState } from "../../redux/ReduxStore/store";
 import { Avatar } from "../../../.storybook/stories/Avatar/Avatar";
@@ -76,7 +82,15 @@ export const CustomerListScreen = (props) => {
         data={customers}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View>
+          <TouchableOpacity
+            onPress={() =>
+              navigate.navigate("FrontendCalendar", {
+                id: item.id,
+                user_id: item.user_id,
+              })
+            }
+            activeOpacity={0.5}
+          >
             <View style={styles.listContainer}>
               <View>
                 <Avatar imageUrl={require("../../../assets/avatar-def.jpg")} />
@@ -100,7 +114,7 @@ export const CustomerListScreen = (props) => {
               </View>
             </View>
             <View style={styles.lineDivider} />
-          </View>
+          </TouchableOpacity>
         )}
         ListEmptyComponent={() => (
           <Text style={{ color: "white" }}>No Customers yet...</Text>
