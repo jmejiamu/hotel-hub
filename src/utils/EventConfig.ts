@@ -18,6 +18,7 @@ export interface EventConfig {
   endMinute: number;
   color: string;
   dayOfWeek: Day;
+  description?: string;
 }
 
 export const generateYearlyEvents = (configs: EventConfig[]): EventItem[] => {
@@ -46,6 +47,7 @@ export const generateYearlyEvents = (configs: EventConfig[]): EventItem[] => {
         start: eventStart.toISOString(),
         end: eventEnd.toISOString(),
         color: config.color,
+        description: config.description,
       });
 
       currentDate = addDays(currentDate, config.intervalDays);

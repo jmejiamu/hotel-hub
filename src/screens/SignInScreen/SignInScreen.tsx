@@ -1,12 +1,17 @@
 import React, { useEffect } from "react";
-import { Animated, SafeAreaView, Text, View } from "react-native";
+import {
+  Animated,
+  SafeAreaView,
+  Text,
+  View,
+  TouchableOpacity,
+} from "react-native";
 import { CustomButton } from "../../../.storybook/stories/CustomButton/CustomButton";
 import { CustomInput } from "../../../.storybook/stories/CustomInput/CustomInput";
 import { RootStackParamList } from "../../types/navigation/navigation";
 import { AppDispatch, RootState } from "../../redux/ReduxStore/store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RouteProp, useNavigation } from "@react-navigation/native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { RootNavigationNames, UserType } from "../../types";
 import { useFadeAnimation, useForm } from "../../hooks";
 import { useDispatch, useSelector } from "react-redux";
