@@ -16,7 +16,9 @@ import {
   CustomCalendar,
   FadeView,
 } from "../../component";
+import { eventConfigs } from "../PredefineCalendar/eventConfig";
 import { CalendarModal } from "../../component/CalendarModal";
+import { generateYearlyEvents } from "../../utils";
 import uuid from "react-native-uuid";
 
 interface CalendarEvent {
@@ -42,6 +44,7 @@ export const CalendarScreen = (props) => {
   const { setLogged } = props;
 
   const dispatch = useDispatch<AppDispatch>();
+  const predefinedEvents = generateYearlyEvents(eventConfigs);
 
   const [items, setItems] = useState([
     { label: "none", value: "none" },
@@ -80,6 +83,7 @@ export const CalendarScreen = (props) => {
   const _onPressCancel = () => {
     setSelectedEvent(undefined);
   };
+  const mergedEvents = [...predefinedEvents, ...events];
 
   const _onPressSubmit = () => {
     setEvents((prevEvents) =>
@@ -163,7 +167,7 @@ export const CalendarScreen = (props) => {
 
       <CustomCalendar
         canlendarView="week"
-        events={events}
+        events={mergedEvents}
         onDragCreateEnd={_onDragCreateEnd}
         onLongPressEvent={_onLongPressEvent}
         selectedEvent={selectedEvent}
