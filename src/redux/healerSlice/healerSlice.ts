@@ -1,17 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { HealerInitalState } from "./types/types";
 
-interface HealerState {
-  event_id: string;
-  user_id: string;
-  userType: string;
-  eventTitle: string;
-  eventDescription: string;
-  eventStartDate: string;
-  eventEndDate: string;
-  path?: string;
-}
-
-const initialState: HealerState = {
+const initialState: HealerInitalState = {
   event_id: "",
   user_id: "",
   userType: "",
@@ -20,11 +10,12 @@ const initialState: HealerState = {
   eventStartDate: "",
   eventEndDate: "",
   path: "",
+  customer_id: "",
 };
 
 export const healerCalendar = createAsyncThunk(
   "healer/healerCalendar",
-  async (userData: HealerState, thunkAPI) => {
+  async (userData: HealerInitalState, thunkAPI) => {
     try {
       const response = await fetch(
         `http://localhost:3000/api-v1/${userData.path}`,
@@ -68,6 +59,7 @@ const healerSlice = createSlice({
       state.eventStartDate = action.payload.eventStartDate;
       state.eventEndDate = action.payload.eventEndDate;
       state.event_id = action.payload.event_id;
+      state.customer_id = action.payload.customer_id;
     });
     builder.addCase(healerCalendar.rejected, (state) => {
       state.user_id = "";
