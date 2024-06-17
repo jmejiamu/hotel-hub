@@ -8,7 +8,7 @@ import { eventConfigs } from "../PredefineCalendar/eventConfig";
 import { CalendarModal } from "../../component/CalendarModal";
 import { useNavigation } from "@react-navigation/native";
 import { generateYearlyEvents } from "../../utils";
-import { RootNavigationNames } from "../../types";
+import { RootNavigationNames, UserType } from "../../types";
 import { useFadeAnimation } from "../../hooks";
 import { View, Image } from "react-native";
 import { useDispatch } from "react-redux";
@@ -17,6 +17,7 @@ import uuid from "react-native-uuid";
 import { styles } from "./styles";
 
 export const FrontendCalendar = (props) => {
+  const { user_id: customer_id } = props.route.params;
   const predefinedEvents = generateYearlyEvents(eventConfigs);
   const dispatch = useDispatch<AppDispatch>();
   const [selectedEvent, setSelectedEvent] = useState<PackedEvent>();
@@ -83,18 +84,18 @@ export const FrontendCalendar = (props) => {
     setEvents((prevEvents) =>
       prevEvents.map((ev) => {
         if (ev.id === selectedEvent?.id) {
-          //FIX: this has to change to specific user
           dispatch(
-            //TODO: change this
+            //TODO: change this - right now this use the same slice as the healer
             healerCalendar({
               event_id: selectedEvent.id,
-              user_id: response?.user_id,
-              userType: response?.userType,
+              user_id: response?.user_id, // Front end desk user id
+              userType: UserType.CUSTOMER,
               eventTitle: selectedEvent?.title || "",
               eventDescription: selectedEvent.description,
               eventStartDate: selectedEvent.start,
               eventEndDate: selectedEvent.end,
-              path: "healer-calendar",
+              customer_id,
+              path: "customer-calendar",
             })
           );
           return { ...ev, ...selectedEvent };
@@ -117,20 +118,8 @@ export const FrontendCalendar = (props) => {
   };
 
   useEffect(() => {
-    if (response.user_id) {
-      //TODO: Double check this to we can see if we need to change
-      dispatch(
-        healersSchedule({
-          user_id: response.user_id,
-          userType: response.userType,
-        })
-      );
-    }
-  }, [response.user_id]);
-
-  useEffect(() => {
     if (res.length > 0) {
-      //TODO: check this too
+      //TODO: check this too - maybe we need to add the customer_id?
       setEvents(
         res.map((item) => ({
           id: item.event_id,
@@ -149,12 +138,11 @@ export const FrontendCalendar = (props) => {
     dispatch(frontendCalendar());
   }, []);
 
+  const headerImg = require("../../../assets/def-cal.jpg");
+
   return (
     <View style={styles.mainContainer}>
-      <Image
-        source={require("../../../assets/def-cal.jpg")}
-        style={styles.headerImage}
-      />
+      <Image source={headerImg} style={styles.headerImage} />
 
       <CustomCalendar
         canlendarView="week"

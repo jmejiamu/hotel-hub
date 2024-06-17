@@ -1,23 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
-export interface FrontEndCaledarState {
-  response: [
-    {
-      event_id: string;
-      event_title: string;
-      event_start: string;
-      event_end: string;
-      event_description: string;
-      user_id: string;
-      userType: string;
-    }
-  ];
-}
-
-interface UserData {
-  user_id: string;
-  userType: string;
-}
+import { FrontEndCaledarState, UserData } from "./types/types";
 
 const userData: UserData = {
   user_id: "",
