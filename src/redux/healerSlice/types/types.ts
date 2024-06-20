@@ -26,5 +26,4 @@ export interface HealerInitalState {
   eventStartDate: string;
   eventEndDate: string;
   path?: string;
-  customer_id?: string;
 }

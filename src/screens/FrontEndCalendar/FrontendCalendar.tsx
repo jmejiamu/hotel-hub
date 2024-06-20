@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { frontendCalendar } from "../../redux/frontEndDesk/frontEndDeskSlice";
-import { healerCalendar, healersSchedule, logoutUser } from "../../redux";
+import { logoutUser, customerCalendar } from "../../redux";
 import { EventItem, PackedEvent, RangeTime } from "@howljs/calendar-kit";
 import { AppDispatch, RootState } from "../../redux/ReduxStore/store";
 import { CalendarFooter, CustomCalendar } from "../../component";
@@ -85,8 +85,7 @@ export const FrontendCalendar = (props) => {
       prevEvents.map((ev) => {
         if (ev.id === selectedEvent?.id) {
           dispatch(
-            //TODO: change this - right now this use the same slice as the healer
-            healerCalendar({
+            customerCalendar({
               event_id: selectedEvent.id,
               user_id: response?.user_id, // Front end desk user id
               userType: UserType.CUSTOMER,
@@ -95,7 +94,6 @@ export const FrontendCalendar = (props) => {
               eventStartDate: selectedEvent.start,
               eventEndDate: selectedEvent.end,
               customer_id,
-              path: "customer-calendar",
             })
           );
           return { ...ev, ...selectedEvent };
@@ -133,7 +131,7 @@ export const FrontendCalendar = (props) => {
         }))
       );
     }
-  }, []);
+  }, [res]);
   useEffect(() => {
     dispatch(frontendCalendar());
   }, []);
