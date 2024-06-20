@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { HealerInitalState } from "./types/types";
+import { CustomerCalendar, ICustomerCalendar } from "./types/types";
 
-const initialState: HealerInitalState = {
+const initialState: CustomerCalendar = {
   event_id: "",
   user_id: "",
   userType: "",
@@ -10,14 +10,15 @@ const initialState: HealerInitalState = {
   eventStartDate: "",
   eventEndDate: "",
   path: "",
+  customer_id: "",
 };
 
-export const healerCalendar = createAsyncThunk(
-  "healer/healerCalendar",
-  async (userData: HealerInitalState, thunkAPI) => {
+export const customerCalendar = createAsyncThunk(
+  "frontendDesk/customerCalendarSlice",
+  async (userData: ICustomerCalendar, thunkAPI) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api-v1/${userData.path}`,
+        `http://localhost:3000/api-v1/customer-calendar`,
         {
           method: "PUT",
           headers: {
@@ -35,12 +36,12 @@ export const healerCalendar = createAsyncThunk(
   }
 );
 
-const healerSlice = createSlice({
-  name: "healer",
+const customerCalendarSlice = createSlice({
+  name: "frontendDesk",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(healerCalendar.pending, (state) => {
+    builder.addCase(customerCalendar.pending, (state) => {
       state.user_id = "";
       state.userType = "";
       state.eventTitle = "";
@@ -50,7 +51,7 @@ const healerSlice = createSlice({
       state.path = "";
       state.event_id = "";
     });
-    builder.addCase(healerCalendar.fulfilled, (state, action) => {
+    builder.addCase(customerCalendar.fulfilled, (state, action) => {
       state.user_id = action.payload.user_id;
       state.userType = action.payload.userType;
       state.eventTitle = action.payload.eventTitle;
@@ -59,15 +60,7 @@ const healerSlice = createSlice({
       state.eventEndDate = action.payload.eventEndDate;
       state.event_id = action.payload.event_id;
     });
-    builder.addCase(healerCalendar.rejected, (state) => {
-      state.user_id = "";
-      state.userType = "";
-      state.eventTitle = "";
-      state.eventDescription = "";
-      state.eventStartDate = "";
-      state.eventEndDate = "";
-    });
   },
 });
 
-export default healerSlice.reducer;
+export default customerCalendarSlice.reducer;

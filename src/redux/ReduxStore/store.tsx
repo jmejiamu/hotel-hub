@@ -4,6 +4,8 @@ import customerSlice from "../customerSlice/customerSlice";
 import healerSlice from "../healerSlice/healerSlice";
 import authSlice from "../auth/authSlice";
 import frontEndDeskSlice from "../frontEndDesk/frontEndDeskSlice";
+import customerCalSlice from "../customerCalSlice/customerCalSlice";
+import customerCalendarSlice from "../frontEndDesk/customerCalendarSlice";
 
 const rootReducer = combineReducers({
   userAuth: authSlice,
@@ -11,6 +13,8 @@ const rootReducer = combineReducers({
   healerSchedule: healerSlice,
   healerGetSchedule: healersScheduleSlice,
   frontEndDeskCalendar: frontEndDeskSlice,
+  customerCal: customerCalSlice,
+  customerCalendar: customerCalendarSlice,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

@@ -146,7 +146,7 @@ export const CalendarScreen = (props) => {
         }))
       );
     }
-  }, []);
+  }, [response.user_id]);
 
   return (
     <FadeView fadeAnim={fadeAnim}>
